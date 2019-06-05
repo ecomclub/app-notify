@@ -5,7 +5,7 @@
   "author": "E-Com Club <ti@e-com.club>",
   "license": "MIT",
   "description": "E-Com Plus app to handle admin notifications",
-  "main": "src/index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -30,6 +30,7 @@
     "standard": "^12.0.1"
   },
   "dependencies": {
+    "console-files": "^2.2.0",
     "ecomplus-app-sdk": "^1.9.7",
     "rest-auto-router": "^3.6.13"
   },
