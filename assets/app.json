@@ -13,6 +13,9 @@
     ],
     "authentications/notifications": [
       "POST"
+    ],
+    "procedures": [
+	    "POST"
     ]
   }
 }
