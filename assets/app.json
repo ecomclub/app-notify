@@ -1,0 +1,18 @@
+{
+  "app_id": 9000,
+  "state": "active",
+  "title": "Admin Notifications",
+  "slug": "notify",
+  "version": "0.0.1",
+  "type": "external",
+  "authentication": true,
+  "auth_callback_uri": "https://notify.ecomplus.biz/api/v1/_callback.json",
+  "auth_scope": {
+    "authentications": [
+      "GET"
+    ],
+    "authentications/notifications": [
+      "POST"
+    ]
+  }
+}
