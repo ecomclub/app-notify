@@ -1,7 +1,7 @@
 'use strict'
 
 // read configured E-Com Plus app data
-const getConfig = require('./../lib/Api/AppConfig')
+const getConfig = require('./../lib/Api/GetConfig')
 // get all admin users from Store API
 const listAuthentications = require('./../lib/Api/ListAuthentications')
 // create new notification for each admin user
