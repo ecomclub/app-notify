@@ -13,3 +13,13 @@ Variable              | Value
 `PROXY_AUTH`          | `auth_token`
 `ECOM_AUTH_DB`        | `~/app/db.sqlite`
 `APP_BASE_URI`        | `https://app.ecomplus.biz/api/v1`
+
+## Production server
+
+Published at https://notify.ecomplus.biz
+
+### Continuous deployment
+
+When app version is **production ready**,
+[create a new release](https://github.com/ecomclub/app-notify/releases)
+to run automatic deploy from `master` branch.
