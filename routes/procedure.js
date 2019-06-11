@@ -54,9 +54,17 @@ const POST = (id, meta, trigger, respond, storeId, appSdk) => {
           let id = admin._id
           if (typeof admin === 'object' && admin !== null && skipAuthIds.indexOf(id) === -1) {
             if (admin.ignore_all === true) {
-              skipAuthIds.push(admin._id)
+              skipAuthIds.push(id)
             } else if (Array.isArray(admin.ignore_by_event)) {
               for (let i = 0; i < admin.ignore_by_event.length; i++) {
+                let ignore = admin.ignore_by_event[i]
+                if (typeof ignore === 'object' && ignore !== null &&
+                ignore.action === action && ignore.resource === resource &&
+                (!ignore.resource_id || ignore.resource_id === notification.resource_id)) {
+                  // configured to be ignored
+                  skipAuthIds.push(id)
+                  break
+                }
               }
             }
           } else if (skipAll === true) {
