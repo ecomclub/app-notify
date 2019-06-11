@@ -21,46 +21,40 @@ const POST = (id, meta, trigger, respond, storeId, appSdk) => {
     .then(({ authentications }) => {
       // reset authentication IDs to be skiped
       skipAuthIds = []
-      let skipAll
 
       // handle trigger body first
       // https://developers.e-com.plus/docs/api/#/store/triggers/triggers
       // setup apiEvent object
       let { action, resource } = trigger
-      if (!action || !resource) {
+      apiEvent = {
+        action,
+        resource,
+        resource_id: trigger.inserted_id || trigger.resource_id
+      }
+      if (!action || !resource || !apiEvent.resource_id) {
         // ignore current trigger
-        skipAll = true
-      } else {
-        apiEvent = {
-          action,
-          resource,
-          resource_id: trigger.inserted_id || trigger.resource_id
-        }
-        if (!apiEvent.resource_id) {
-          // invalid procedure ?
-          skipAll = true
-        }
+        // invalid procedure ?
+        let err = new Error()
+        err.name = SKIP_TRIGGER_NAME
+        throw err
       }
 
-      if (!skipAll && authentications && Array.isArray(authentications)) {
-        // preset skip all
-        skipAll = true
+      if (authentications && Array.isArray(authentications)) {
         for (let i = 0; i < authentications.length; i++) {
           let admin = authentications[i]
           // admin => { _id, ignore_all, ignore_by_event }
           // admin.ignore_by_event = [ action, resource, resource_id ]
+          let id = admin._id
 
           // check if notification must be skipped for current admin user
-          let id = admin._id
-          let skip = false
           if (id === trigger.authentication_id) {
             // event triggered by current admin user
             // convenien to ignore
-            skip = true
+            skipAuthIds.push(id)
           } else if (typeof admin === 'object' && admin !== null && skipAuthIds.indexOf(id) === -1) {
             if (admin.ignore_all === true) {
               // ignore all notifications for current admin user
-              skip = true
+              skipAuthIds.push(id)
             } else if (Array.isArray(admin.ignore_by_event)) {
               // check list of events to be ignored
               for (let i = 0; i < admin.ignore_by_event.length; i++) {
@@ -69,29 +63,15 @@ const POST = (id, meta, trigger, respond, storeId, appSdk) => {
                 ignore.action === action && ignore.resource === resource &&
                 (!ignore.resource_id || ignore.resource_id === apiEvent.resource_id)) {
                   // configured to be ignored
-                  skip = true
+                  skipAuthIds.push(id)
                   break
                 }
               }
             }
           }
-
-          if (skip) {
-            // don't notify current admin user
-            skipAuthIds.push(id)
-          } else if (skipAll === true) {
-            // must create notification(s)
-            // unset skip all
-            skipAll = false
-          }
         }
       }
 
-      if (skipAll) {
-        let err = new Error()
-        err.name = SKIP_TRIGGER_NAME
-        throw err
-      }
       // get authentication tokens
       return appSdk.getAuth(storeId)
     })
