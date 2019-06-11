@@ -44,6 +44,12 @@ ecomAuth.then(appSdk => {
   const middleware = (id, meta, body, respond, req, res, resource, verb, endpoint) => {
     // function called before endpoints
     // authentications and other prerequisites when necessary
+    if (resource === 'version') {
+      // bypass to version endpoint
+      endpoint(id, meta, body, respond)
+      return
+    }
+
     // requires Store ID
     let storeId = req.headers['x-store-id']
     if (typeof storeId === 'string') {
