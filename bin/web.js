@@ -45,7 +45,7 @@ ecomAuth.then(appSdk => {
     // function called before endpoints
     // authentications and other prerequisites when necessary
     if (resource === 'version') {
-      // bypass to version endpoint
+      // bypass to version endpoint without authentication
       endpoint(id, meta, body, respond)
       return
     }
