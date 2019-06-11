@@ -13,7 +13,7 @@ const ECHO_SKIP = 'NOTIFY_SKIP'
 const ECHO_API_ERROR = 'STORE_API_ERR'
 
 const POST = (id, meta, trigger, respond, storeId, appSdk) => {
-  let client, notification, skipAuthIds
+  let client, apiEvent, skipAuthIds
 
   // get user notification options from E-Com Plus application data
   getConfig({ appSdk, storeId })
@@ -25,18 +25,18 @@ const POST = (id, meta, trigger, respond, storeId, appSdk) => {
 
       // handle trigger body first
       // https://developers.e-com.plus/docs/api/#/store/triggers/triggers
-      // setup notification object
+      // setup apiEvent object
       let { action, resource } = trigger
       if (!action || !resource) {
         // ignore current trigger
         skipAll = true
       } else {
-        notification = {
+        apiEvent = {
           action,
           resource,
           resource_id: trigger.inserted_id || trigger.resource_id
         }
-        if (!notification.resource_id) {
+        if (!apiEvent.resource_id) {
           // invalid procedure ?
           skipAll = true
         }
@@ -60,7 +60,7 @@ const POST = (id, meta, trigger, respond, storeId, appSdk) => {
                 let ignore = admin.ignore_by_event[i]
                 if (typeof ignore === 'object' && ignore !== null &&
                 ignore.action === action && ignore.resource === resource &&
-                (!ignore.resource_id || ignore.resource_id === notification.resource_id)) {
+                (!ignore.resource_id || ignore.resource_id === apiEvent.resource_id)) {
                   // configured to be ignored
                   skipAuthIds.push(id)
                   break
@@ -96,7 +96,13 @@ const POST = (id, meta, trigger, respond, storeId, appSdk) => {
         let id = authentication._id
         if (skipAuthIds.indexOf(id) === -1) {
           // create notification for current admin user
-          promises.push(createNotification(client, id, notification))
+          promises.push(createNotification(client, id, {
+            // event date and time ISO string
+            datetime: trigger.datetime || new Date().toISOString(),
+            content: {
+              api_event: apiEvent
+            }
+          }))
         }
       })
       return Promise.all(promises)
