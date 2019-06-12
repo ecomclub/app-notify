@@ -1,6 +1,6 @@
 'use strict'
 
-// const logger = require('console-files')
+const logger = require('console-files')
 // read configured E-Com Plus app data
 const getConfig = require('./../lib/Api/GetConfig')
 // get all admin users from Store API
@@ -14,7 +14,7 @@ const ECHO_SKIP = 'NOTIFY_SKIP'
 const ECHO_API_ERROR = 'STORE_API_ERR'
 
 const POST = (id, meta, trigger, respond, storeId, appSdk) => {
-  // logger.log(trigger)
+  logger.log(`Trigger #${trigger._id}`)
   let client, apiEvent, skipAuthIds
 
   // get user notification options from E-Com Plus application data
@@ -91,6 +91,7 @@ const POST = (id, meta, trigger, respond, storeId, appSdk) => {
         let id = authentication._id
         if (skipAuthIds.indexOf(id) === -1) {
           // create notification for current admin user
+          logger.log(`Auth #${id}`)
           promises.push(createNotification(client, id, {
             // event date and time ISO string
             datetime: trigger.datetime || new Date().toISOString(),
