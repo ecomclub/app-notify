@@ -1,6 +1,6 @@
 'use strict'
 
-const logger = console.log('console-files')
+const logger = require('console-files')
 // read configured E-Com Plus app data
 const getConfig = require('./../lib/Api/GetConfig')
 // get all admin users from Store API
