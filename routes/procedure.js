@@ -1,6 +1,6 @@
 'use strict'
 
-// const logger = require('console-files')
+const logger = require('console-files')
 // read configured E-Com Plus app data
 const getConfig = require('./../lib/Api/GetConfig')
 // get all admin users from Store API
@@ -114,7 +114,10 @@ const POST = (id, meta, trigger, respond, storeId, appSdk) => {
         // trigger ignored by app configuration
         respond(ECHO_SKIP)
       } else {
-        // logger.error(err)
+        if (!err.request) {
+          // not Axios error ?
+          logger.error(err)
+        }
         // request to Store API with error response
         // return error status code
         respond({}, null, 500, ECHO_API_ERROR, err.message)
