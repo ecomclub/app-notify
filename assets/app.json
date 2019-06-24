@@ -3,7 +3,7 @@
   "state": "active",
   "title": "Admin Notifications",
   "slug": "notify",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "type": "external",
   "authentication": true,
   "auth_callback_uri": "https://notify.ecomplus.biz/api/v1/_callback.json",
